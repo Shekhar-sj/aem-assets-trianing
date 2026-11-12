@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEM Assets Migration Training — Migration Consultant Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&amp;family=Source+Code+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="light" data-progress-key="assets-migration-training-v1">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><svg class="brand-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#eb1000" d="M14.2 2H22v20L14.2 2zM9.8 2H2v20L9.8 2zM12 9.4 17 22h-3.3l-1.5-3.8H8.6L12 9.4z"/></svg> Adobe ACS Learning</div>
+    <div class="topbar-title">AEM Assets Migration Training</div>
+    <div class="topbar-actions">
+      <div class="progress-chip"><span id="progressLabel">0 / 0</span><span class="bar"><span id="progressBarFill"></span></span></div>
+      <button class="iconbtn" id="themeToggle" title="Toggle light / dark">◐</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-section-title">Contents</div>
+    <div class="rail" id="rail"></div>
+    <div class="sidebar-section-title">Path source</div>
+    <div class="refs-row">
+      <a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/getting-started" target="_blank" rel="noopener">Migration journey (EL) ↗</a>
+      <a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/overview-content-transfer-tool" target="_blank" rel="noopener">Content Transfer Tool ↗</a>
+      <a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets#asset-bulk-ingestor" target="_blank" rel="noopener">Bulk Import (EL) ↗</a>
+      <a href="https://wiki.corp.adobe.com/spaces/AEMComp/pages/3189405894/Asset+Migration+strategy+Document" target="_blank" rel="noopener">🔒 Strategy doc (wiki) ↗</a>
+    </div>
+    <button type="button" class="reset-progress" id="resetProgress">↺ Reset progress</button>
+  </nav>
+
+  <main>
+    <div class="charter-bar"><div class="eyebrow">AEM Assets Enablement Charter</div></div>
+    <select class="mobile-nav" id="mobileNav" aria-label="Jump to section"></select>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="section" id="overview" data-title="Overview">
+      <div class="section-head"><div class="day-num">◆</div><h2>Overview</h2></div>
+      <div class="section-body">
+        <h1>AEM Assets Migration Training</h1>
+        <p class="lead">Migration consultant edition. A day-by-day path from discovery to a validated go-live — strategy, binaries, metadata, the Content Transfer Tool, Bulk Import and the Content Copy Tool. Every reference, assignment and "done when" check a migration consultant needs, in one place.</p>
+        <div class="meta-pills">
+          <span>Version <b>1.0 (draft)</b></span>
+          <span>Author <b>TBD</b></span>
+          <span>Owner <b>ACS, GDC — AEM Competency</b></span>
+          <span>Company <b>Adobe ACS</b></span>
+        </div>
+        <p>Moving a DAM is rarely "copy the files". A successful assets migration is a planned project: you discover what the client really has, choose the right ingestion method per source, clean names and metadata <i>before</i> they land in AEM, prove the approach with a pilot, and then execute, validate and keep the target in sync until cut-over. This program teaches that end-to-end flow for <b>AEM as a Cloud Service (AEMaaCS) Assets</b> targets.</p>
+        <p><b>Plan for 3 days</b> (≈ 18–21 h across the days, plus 6–8 h for the capstone). Estimates assume basic AEM Assets familiarity and exclude time waiting on access approvals (Cloud Manager, CAM, Software Distribution).</p>
+
+        <h3>Your learning path</h3>
+        <p class="note">Six stops from setup to a migrated, validated capstone. Pick any card to jump in — your progress is saved in this browser.</p>
+        <div class="path-grid">
+          <button class="path-card" data-goto="prereqs" style="--c: var(--c-grey)"><span class="num">0</span><span><span class="t">Pre-requisites &amp; setup</span><span class="h">◷ ~1–2 h</span></span></button>
+          <button class="path-card" data-goto="day1" style="--c: var(--c-blue)"><span class="num">01</span><span><span class="t">Migration strategy &amp; binaries</span><span class="h">◷ 6–7 h</span></span></button>
+          <button class="path-card" data-goto="day2" style="--c: var(--c-purple)"><span class="num">02</span><span><span class="t">Bulk Import, metadata &amp; validation</span><span class="h">◷ 6–7 h</span></span></button>
+          <button class="path-card" data-goto="day3" style="--c: var(--c-green)"><span class="num">03</span><span><span class="t">Content Transfer Tool &amp; Content Copy Tool</span><span class="h">◷ 6–7 h</span></span></button>
+          <button class="path-card" data-goto="capstone" style="--c: var(--c-orange)"><span class="num">★</span><span><span class="t">Capstone — Luma Retail DAM migration</span><span class="h">◷ 6–8 h</span></span></button>
+          <button class="path-card" data-goto="resources" style="--c: var(--c-teal)"><span class="num">📚</span><span><span class="t">Additional resources &amp; vocabulary</span><span class="h">◷ reference</span></span></button>
+        </div>
+
+        <h3>Migration scenarios covered</h3>
+        <div class="compare">
+          <div class="opt" style="--c: var(--c-blue)"><h5>A · AEM 6.x / AMS → AEMaaCS</h5><p>Source is an on-premise or Adobe Managed Services AEM (6.3+). Use <b>BPA + Cloud Acceleration Manager + Content Transfer Tool (CTT)</b>. Covered on Day 3.</p></div>
+          <div class="opt" style="--c: var(--c-purple)"><h5>B · External DAM / file store → AEMaaCS</h5><p>Source is a non-AEM DAM, file share or cloud drive. Stage binaries in <b>Azure Blob / Amazon S3</b> (or connect Dropbox etc.) and use the <b>Bulk Import tool</b> + <b>metadata import</b>. Covered on Day 2.</p></div>
+          <div class="opt" style="--c: var(--c-green)"><h5>C · AEMaaCS ↔ AEMaaCS environments</h5><p>Not a migration in itself, but used during every migration to refresh lower environments. Use the <b>Content Copy Tool</b> in Cloud Manager (CTT can't copy cloud → cloud). Covered on Day 3.</p></div>
+        </div>
+
+        <h3>By the end you will be able to</h3>
+        <ul class="obj-list">
+          <li>Run an assets discovery workshop and turn the answers into a migration approach and risk list.</li>
+          <li>Choose the right binary ingestion method (CTT, Bulk Import, aem-upload / Asset APIs, manual) using the decision tree.</li>
+          <li>Apply AEM naming rules, folder design and batching guidance before ingestion.</li>
+          <li>Configure, dry-run, schedule and monitor Bulk Import from Azure Blob, S3 and Dropbox.</li>
+          <li>Map, transform and import metadata in bulk with CSV — and know when to do it in code.</li>
+          <li>Run BPA, create migration sets in CAM, extract and ingest with CTT, including top-ups and AzCopy pre-copy.</li>
+          <li>Use the Content Copy Tool safely, and know what it is <i>not</i> for.</li>
+          <li>Validate a migration (counts, size, sampling, hashes, metadata), plan the delta and run the post-migration checklist.</li>
+        </ul>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>Document control</h3>
+            <dl class="kv">
+              <dt>Title</dt><dd>AEM Assets Migration Training — Assets Enablement Charter</dd>
+              <dt>Company</dt><dd>Adobe ACS</dd>
+              <dt>Authors</dt><dd>ACS, GDC — AEM Competency</dd>
+              <dt>Purpose</dt><dd>Assets migration learning path for migration consultants (developers and functional consultants), targeting AEM as a Cloud Service</dd>
+            </dl>
+          </div>
+          <div class="card">
+            <h3>Version control</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Ver</th><th>Date</th><th>Author</th><th>Comments</th></tr></thead>
+              <tbody><tr><td>1.0</td><td>12/11/26</td><td>TBD</td><td>First interactive version, built from the AEMComp Asset Migration Strategy wiki, WEM Bulk Import guides and Experience League.</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>How the assignments work</h3>
+          <p>All assignments build one practice migration for a fictional client, <b>Luma Retail</b>, which is moving to AEMaaCS Assets from two sources: a legacy <b>AEM 6.5 author</b> (scenario A) and a <b>third-party DAM export staged in Azure Blob Storage</b> (scenario B). Keep working in the same environments rather than starting fresh each day — the capstone stitches everything together. Each assignment has a <b>"Done when"</b> check: treat it as the definition of done. Assignments marked <b>(Dev track)</b> are optional for functional consultants.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRE-REQUISITES ============ -->
+    <section class="section" id="prereqs" data-title="Pre-requisite skills &amp; setup">
+      <div class="section-head"><div class="day-num">—</div><h2>Pre-requisite skills &amp; setup</h2><span class="time-pill">~1–2 h setup</span></div>
+      <p class="section-sub">Get your accounts, environments and tools ready before Day 1. Access requests can take days — raise them first.</p>
+      <div class="section-body">
+        <h3>Before you start — access you'll need</h3>
+        <ul>
+          <li><b>Adobe ID in an IMS org with an AEMaaCS program</b> — a <b>sandbox program</b> is enough. You need the <b>Deployment Manager</b> role in Cloud Manager and membership in the local <b>AEM administrators</b> group on the author service (required to start CTT ingestions and to use Bulk Import).</li>
+          <li><b>Cloud Acceleration Manager (CAM)</b> — available to the same IMS org; you'll create a CAM project on Day 3.</li>
+          <li><b>Software Distribution portal</b> — to download the Content Transfer Tool package (and BPA).</li>
+          <li><b>A source AEM 6.5 author</b> — a local quickstart with a valid licence is fine. It must have outbound access to <code>casstorageprod.blob.core.windows.net</code> for CTT extraction.</li>
+          <li><b>Cloud storage for staging</b> — an Azure Storage account (preferred for this training) or an AWS S3 bucket, created as <b>private</b>. Optional: a Dropbox account to try the Dropbox source.</li>
+          <li><b>Adobe wiki access</b> — to the AEMComp <i>Asset Migration strategy Document</i> and its sub-pages (🔒 links in this guide are internal).</li>
+        </ul>
+
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Topic</div><div class="value">Details</div></div>
+          <div class="spec-row"><div class="label">AEM Assets fundamentals</div><div class="value">
+            <p>You should be comfortable with DAM folders, asset properties, metadata schemas, metadata profiles, processing profiles and publishing. If you're new to AEM Assets, work through the Assets basics first.</p>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/overview" target="_blank" rel="noopener">AEMaaCS Assets overview</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/metadata-schemas" target="_blank" rel="noopener">Metadata schemas</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/asset-microservices-configure-and-use" target="_blank" rel="noopener">Processing profiles &amp; asset microservices</a></li>
+            </ul>
+          </div></div>
+          <div class="spec-row"><div class="label">AEMaaCS architecture</div><div class="value">
+            <p>Know the difference between author / publish tiers, environments (Dev, Stage, Prod, RDE) and what Cloud Manager does. Understand that AEMaaCS processes assets with cloud-native <b>asset microservices</b> instead of the 6.5 DAM Update Asset workflow.</p>
+            <ul class="link-list"><li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/overview/introduction" target="_blank" rel="noopener">Introduction to AEMaaCS</a></li></ul>
+          </div></div>
+          <div class="spec-row"><div class="label">Data handling</div><div class="value">
+            <p>You'll transform CSV files (merge on a key column, split multi-value fields, reformat dates). Excel/LibreOffice is enough; a little Python or Node.js helps. Always save CSVs as <b>UTF-8</b>.</p>
+          </div></div>
+        </div>
+
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Tool</div><div class="value">Details</div></div>
+          <div class="spec-row"><div class="label">AEM 6.5 quickstart (source)</div><div class="value"><p>A local author on <code>localhost:4502</code> with some sample assets loaded (any public sample image set works). Java 8 or 11; the <code>java</code> command must work for the user running AEM — CTT needs it.</p></div></div>
+          <div class="spec-row"><div class="label">Azure Storage Explorer / AzCopy</div><div class="value">
+            <p>Upload the staging data set and generate SAS tokens. AzCopy is also what CTT uses for blob pre-copy.</p>
+            <ul class="link-list"><li><a href="https://azure.microsoft.com/en-us/products/storage/storage-explorer" target="_blank" rel="noopener">Azure Storage Explorer</a></li><li><a href="https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10" target="_blank" rel="noopener">AzCopy v10</a></li></ul>
+          </div></div>
+          <div class="spec-row"><div class="label">Node.js (LTS) + aem-upload</div><div class="value">
+            <p>Dev track only — used to ingest assets programmatically with direct binary upload.</p>
+            <pre><code>node --version
+npm install @adobe/aem-upload</code></pre>
+            <ul class="link-list"><li><a href="https://github.com/adobe/aem-upload" target="_blank" rel="noopener">adobe/aem-upload</a></li></ul>
+          </div></div>
+          <div class="spec-row"><div class="label">VS Code + a spreadsheet tool</div><div class="value"><p>For scripts and CSV transformation. Turn off "smart" auto-formatting of dates and leading zeros when opening CSVs in Excel.</p></div></div>
+        </div>
+
+        <h3>Readiness checklist</h3>
+        <ul class="checklist">
+          <li><input type="checkbox" id="pr-1"><label for="pr-1">I can log in to Cloud Manager and see my AEMaaCS sandbox program and environment</label></li>
+          <li><input type="checkbox" id="pr-2"><label for="pr-2">I'm in the AEM administrators group on the AEMaaCS author service</label></li>
+          <li><input type="checkbox" id="pr-3"><label for="pr-3">I can open Cloud Acceleration Manager for my IMS org</label></li>
+          <li><input type="checkbox" id="pr-4"><label for="pr-4">I can download from the Software Distribution portal</label></li>
+          <li><input type="checkbox" id="pr-5"><label for="pr-5">A local AEM 6.5 author is running with sample assets</label></li>
+          <li><input type="checkbox" id="pr-6"><label for="pr-6">A private Azure Blob container (or S3 bucket) exists and I can upload to it</label></li>
+          <li><input type="checkbox" id="pr-7"><label for="pr-7">I can open the AEMComp Asset Migration Strategy wiki</label></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ DAY 1 ============ -->
+    <section class="section" id="day1" data-title="Day 1 — Migration strategy &amp; binaries">
+      <div class="section-head"><div class="day-num">01</div><h2>Migration strategy &amp; binaries</h2><span class="time-pill">6–7 h</span></div>
+      <p class="section-sub">Learn how an assets migration is planned before anything is moved: the phases, the discovery questions that decide the approach, how to choose a binary ingestion method, and the design rules that keep ingestion fast and clean.</p>
+      <div class="section-body">
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Topic</div><div class="value">Details</div></div>
+
+          <div class="spec-row"><div class="label">The migration journey</div><div class="value">
+            <p>Adobe frames the move to AEMaaCS as four phases, supported by <b>Cloud Acceleration Manager (CAM)</b> from planning to go-live:</p>
+            <div class="flow">
+              <div class="step"><b>Readiness</b><small>Assess the source (BPA), learn what changed in the cloud</small></div>
+              <div class="step"><b>Implementation</b><small>Make code &amp; content cloud-ready, migrate content</small></div>
+              <div class="step"><b>Go-Live</b><small>Final top-up, content freeze, cut-over</small></div>
+              <div class="step"><b>Post Go-Live</b><small>Monitor, reprocess, optimise</small></div>
+            </div>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/getting-started" target="_blank" rel="noopener">Migration journey — getting started</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-acceleration-manager/using-cam/getting-started-cam" target="_blank" rel="noopener">Cloud Acceleration Manager</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-learn/cloud-service/migration/moving-to-aem-as-a-cloud-service/content-migration/faq" target="_blank" rel="noopener">Content migration FAQ</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Our approach (ACS)</div><div class="value">
+            <p>The ACS Asset Migration Strategy chooses the approach from three drivers: the <b>asset source</b>, the <b>AEM destination</b> (AMS or Cloud Service) and the <b>business use case</b>. Extracting assets and metadata out of the source system is normally the <b>client's responsibility</b> and out of scope; we own bringing them into AEM, applying metadata, and the design decisions around that.</p>
+            <div class="flow">
+              <div class="step"><b>Discovery</b><small>Questionnaire, volumes, sources</small></div>
+              <div class="step"><b>Evaluate strategy</b><small>Decision tree → method</small></div>
+              <div class="step"><b>Design</b><small>Folders, naming, batches, indexes</small></div>
+              <div class="step"><b>Proof of Migration</b><small>Pilot on Stage, estimate</small></div>
+              <div class="step"><b>Execute</b><small>Binaries, then metadata</small></div>
+              <div class="step"><b>Validate &amp; delta</b><small>KPIs, top-ups, freeze</small></div>
+              <div class="step"><b>Post migration</b><small>Reprocess, publish, hand over</small></div>
+            </div>
+            <ul class="link-list">
+              <li><a class="internal" href="https://wiki.corp.adobe.com/spaces/AEMComp/pages/3189405894/Asset+Migration+strategy+Document" target="_blank" rel="noopener">Asset Migration Strategy (decision tree)</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251636" target="_blank" rel="noopener">Approach</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251632" target="_blank" rel="noopener">Strategy v1.2 (TOC)</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Discovery</div><div class="value">
+            <p>Answer these before choosing a route — each one changes the plan:</p>
+            <ol>
+              <li><b>Number of assets / nodes</b> — node count drives duration more than size. Example from the field: <i>4 GB with 50k nodes</i> took longer than <i>24 GB with 8k nodes</i>. Beyond supported node limits, involve engineering.</li>
+              <li><b>Repository size</b> — secondary to node count, but needed for planning and validation.</li>
+              <li><b>Source systems</b> — one or many; AEM or non-AEM (another DAM, file shares, drives).</li>
+              <li><b>Feature gap</b> — what does the client use today that works differently (or not at all) in AEM Assets?</li>
+              <li><b>Downtime &amp; freeze</b> — is a content freeze acceptable, and when? Set expectations on delta migration early.</li>
+              <li><b>As-is or filtered</b> — clean up outdated/duplicate assets <i>before</i> migrating (at the source or in temporary S3/Azure storage, not in AEM). Confirm in the SOW who moves assets to temporary storage.</li>
+              <li><b>Target hierarchy</b> — same as source, or new? Decide: move after ingestion, ingest via API to target paths, or restructure before ingestion.</li>
+              <li><b>Frequency</b> — one-time migration or recurring ingestion?</li>
+              <li><b>Naming</b> — special characters, upper-case folders, duplicates, which versions (latest or all).</li>
+              <li><b>Metadata</b> — what must be mapped, is it required for all assets, does anything need writing to the binary (XMP)?</li>
+              <li><b>File formats</b> — everything can be stored, but not every format gets thumbnails/previews (for example EPS/AI/PSD). Align expectations.</li>
+              <li><b>Success KPIs</b> — agree up front: number of assets, size, SHA values, metadata.</li>
+            </ol>
+            <p>For AEM sources also ask about custom Oak indexes, a customised DAM Update Asset workflow, ACS Commons / Asset Share Commons usage, versions, Dynamic Media, Content Fragments in the DAM and the latest BPA report.</p>
+            <ul class="link-list">
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251638" target="_blank" rel="noopener">Discovery</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3200298156" target="_blank" rel="noopener">Discovery Questionnaire</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/file-format-support" target="_blank" rel="noopener">Supported file formats</a></li>
+            </ul>
+            <div class="tipbox"><span class="ic">💡</span><p><b>Tip:</b> the questionnaire has a <i>Common</i> tab (all sources) and an <i>AEM to CS</i> tab. Timebox each block (business objectives 10–20 min, users 5–15 min, DAM 10–15 min, integrations 5–15 min, architecture 2–5 min) so a workshop fits in two hours.</p></div>
+          </div></div>
+
+          <div class="spec-row"><div class="label">3.1 Binaries — choosing an ingestion method</div><div class="value">
+            <p>Use the decision tree to pick a method per source. The most common options:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Method</th><th>Source → target</th><th>Metadata</th><th>Use when</th></tr></thead>
+              <tbody>
+                <tr><td><b>Content Transfer Tool</b> (+ CAM)</td><td>AEM 6.3+ on-prem/AMS → AEMaaCS</td><td>Travels with the content</td><td>The recommended route for AEM → Cloud Service</td></tr>
+                <tr><td><b>Bulk Import</b> (OOTB)</td><td>Azure Blob / S3 (Assets view also: Dropbox, etc.) → AEMaaCS</td><td>Second step: CSV metadata import</td><td>Non-AEM sources; large initial loads; one-time or scheduled runs. Consolidate many sources into one staging location first</td></tr>
+                <tr><td><b>aem-upload / Asset upload API</b></td><td>Any → AEMaaCS</td><td>Same step (one pass)</td><td>Frequent ingestion, need progress monitoring/cancel, target path decided by business logic. Custom development</td></tr>
+                <tr><td><b>Assets HTTP API</b> (Asset Manager API)</td><td>Any → AEM 6.x</td><td>Same step</td><td>6.x targets with dynamic hierarchy; needs an external app and hosting</td></tr>
+                <tr><td><b>Manual</b> (UI, Desktop app)</td><td>Local → AEM</td><td>Second step: CSV import</td><td>Low volume only — not for migrations. ZIP "extract archive" is AMS/6.x only, not Cloud Service</td></tr>
+                <tr><td><b>Package Manager</b></td><td>AEM → AEMaaCS</td><td>With content</td><td>Small, targeted content only</td></tr>
+              </tbody>
+            </table></div>
+            <ul class="link-list">
+              <li><a class="internal" href="https://wiki.corp.adobe.com/spaces/AEMComp/pages/3189405894/Asset+Migration+strategy+Document" target="_blank" rel="noopener">Decision tree</a></li>
+              <li><a href="https://lucid.app/lucidspark/3aa7c0e7-0ff7-43c5-bf8f-e25c10f5a2d0/view?page=0_0" target="_blank" rel="noopener">Decision tree (Lucid)</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets" target="_blank" rel="noopener">Upload methods overview</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251644" target="_blank" rel="noopener">Asset API (CaaS)</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251642" target="_blank" rel="noopener">Bulk Import (CaaS)</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251661" target="_blank" rel="noopener">Asset HTTP API (6.x)</a></li>
+            </ul>
+            <p class="note">AMS-only options you may meet on older projects: the ACS Commons S3 Ingestor, MCP asset ingestion tools and the internal SQS tool (<code>dam-extension-s3</code>).</p>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Design considerations</div><div class="value">
+            <ul>
+              <li><b>Folder size</b> — keep folders to about <b>1,000 direct children</b>. AEMaaCS supports more, but above 1,000 the Admin UI switches to an asynchronously updated listing (new items appear after a short delay).</li>
+              <li><b>Batches</b> — migrate large volumes in phases, for example <b>6 TB as 10 batches of 600 GB</b>, or about <b>50k assets per batch</b>.</li>
+              <li><b>Offline compaction</b> (AMS/on-prem targets) — compact after every ~50k assets or when throughput drops.</li>
+              <li><b>Metadata CSV</b> — always <b>UTF-8</b> so special characters survive.</li>
+              <li><b>Write-back</b> — decide whether metadata must be written into the binary and whether a custom namespace is needed.</li>
+              <li><b>Indexes</b> — deploy index changes for business search/filters <i>before</i> migration; reindexing later is heavy.</li>
+              <li><b>Hierarchy</b> — migration is as-is; restructure before ingestion, move afterwards, or use the APIs.</li>
+              <li><b>Failures</b> — under 50 failed assets: retrigger manually. Over 50: find the root cause, fix, then re-run.</li>
+            </ul>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251664" target="_blank" rel="noopener">Design Considerations</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Naming conventions</div><div class="value">
+            <p>AEMaaCS blocks uploads with forbidden characters. Fix names <i>before</i> ingestion — ideally at the source or in the staging bucket.</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>Not allowed</th></tr></thead>
+              <tbody>
+                <tr><td>Asset name</td><td><code>* / : [ \ ] | # % { } ? &amp;</code> and <code>;=</code></td></tr>
+                <tr><td>Folder name</td><td><code>* / : [ \ ] | # % { } ? " . ^ ; + &amp;</code> and tab — and folders should be <b>lower-case</b> on Cloud Service</td></tr>
+              </tbody>
+            </table></div>
+            <p><b>What Bulk Import does automatically:</b> asset names are escaped with <code>JcrUtil.escapeIllegalJcrChars</code> (for example <code>new%asset.png</code> → <code>new%25asset.png</code>); folder names go through <code>DamUtil.getSanitizedFolderName</code> (lower-cased, special characters and spaces → <code>-</code>). Names ending in a dot or containing control characters are skipped and marked failed. The original title is kept in <code>jcr:title</code>.</p>
+            <p><b>Approaches</b> (preferred first):</p>
+            <ol>
+              <li>Script over the staging bucket (for example an AWS Lambda / Azure Function) that replaces unsupported characters and <b>logs every rename</b> for validation.</li>
+              <li>Export the file list to CSV, find offending names with a regex, rename by script or by hand.</li>
+              <li>Let the ingestor sanitise — fine for a small number of files, but you lose an explicit rename log.</li>
+            </ol>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets#filename-handling" target="_blank" rel="noopener">Filename handling</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets#filename-handling-bulkimport" target="_blank" rel="noopener">Bulk import name handling</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251667" target="_blank" rel="noopener">Naming convention approaches</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3202059440" target="_blank" rel="noopener">Accelerators (S3 cleanup, BPA utility)</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Pre-migration checklist</div><div class="value">
+            <ul>
+              <li>Finalise the approach; sanitise names; clean up unwanted assets at the source. Confirm S3/Azure access if your method needs it.</li>
+              <li>Disable workflow launchers and listeners that aren't needed under the migration root (<code>/content/dam/&lt;root&gt;</code>) — this is a code deployment.</li>
+              <li>Put the <b>metadata schema</b>, custom namespaces, <b>metadata profiles</b> and <b>processing profiles</b> on target folders <i>before</i> ingestion.</li>
+              <li>Deploy index changes (for example to <code>damAssetLucene</code>) before ingestion; decide on full-text search in documents (Tika).</li>
+              <li>Decide with the client whether to keep <b>Smart Tags</b> enabled (on by default in AEMaaCS; disabling also disables similarity search).</li>
+              <li>AMS/on-prem targets: lower <code>error.log</code> level on lower environments, optimise or defer DAM Update Asset, and tune the ACS Commons Throttled Task Runner (max threads ≈ cores ÷ 2; default 4).</li>
+              <li>Communicate: authoring freeze for business users; no code or content deployments during migration.</li>
+            </ul>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251666" target="_blank" rel="noopener">Pre-Migration Checklist</a></li><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3737887359" target="_blank" rel="noopener">Sample tasks checklist (AMS → CS)</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Proof of Migration (PoM)</div><div class="value">
+            <ol>
+              <li>Run a pilot on a lower environment (Stage) with production-like content.</li>
+              <li>Pilot size: <b>25% of the content or ~1 TB, whichever is less</b>, mixing all content types.</li>
+              <li>Resolve issues found (disk space, connectivity, ingestion errors).</li>
+              <li>Time it — for 6.x targets with and without the DAM Update Asset workflow — and extrapolate to a production plan and estimate.</li>
+              <li>After QA sign-off of the pilot, run the full migration on <b>production author</b>.</li>
+            </ol>
+            <p class="note">For CTT there is no formula for duration: bandwidth, heap, disk I/O and node/blob counts all matter. Run PoMs early and extrapolate.</p>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251671" target="_blank" rel="noopener">Proof of Migration</a></li></ul>
+          </div></div>
+        </div>
+
+        <h3>Assignments</h3>
+        <div class="assignments">
+          <div class="assignment"><div class="a-head">#1<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Run a mock discovery for Luma Retail with a peer playing the client. Use both tabs of the Discovery Questionnaire. Luma facts: 1.8 TB / ~900k assets in AEM 6.5 on AMS; 400 GB / 120k assets in a third-party DAM exported to files + a metadata spreadsheet; go-live in 10 weeks; authors work Monday–Friday.</p>
+            <div class="done-when"><b>Done when</b>you have a completed questionnaire, a list of at least 5 risks/assumptions, and the agreed success KPIs.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#2<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Use the decision tree to choose a binary method for each scenario and justify it: (a) Luma's AEM 6.5 DAM; (b) the third-party DAM export; (c) a nightly feed of ~500 product images from a PIM where the folder depends on the product category; (d) a marketing team uploading 30 campaign files a week.</p>
+            <div class="done-when"><b>Done when</b>a table lists, per scenario, the method, how metadata is applied (same step or second step) and a one-line rationale.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#3<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Write a small script (Python, Node.js or PowerShell) that walks a folder tree, flags asset and folder names that break AEM rules, proposes a compliant name (lower-case folders, unsupported characters → <code>-</code>, de-duplicated with <code>_1</code>, <code>_2</code>) and writes <code>rename-log.csv</code> (old path, new path, reason).</p>
+            <div class="done-when"><b>Done when</b>the log covers every violation in your Day 2 sample set, and running the script again on the renamed tree finds zero violations.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#4<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Draft Luma's Proof of Migration and batching plan for the 1.8 TB AEM source: pilot size, environment, what you'll measure, batch structure, and the pre-migration checklist items that apply to an AEMaaCS target.</p>
+            <div class="done-when"><b>Done when</b>the pilot size is correct (25% of 1.8 TB = 450 GB, which is under 1 TB), the plan names the measurements used to extrapolate, and AMS-only checklist items are excluded.</div>
+          </div></div>
+        </div>
+
+        <h3>Knowledge check</h3>
+        <div class="quiz">
+          <details><summary>Which matters more for migration duration — repository size or node count?</summary><p>Node count. Many small assets (more nodes) can take longer than fewer large ones.</p></details>
+          <details><summary>A folder name in the source is <code>Spring Campaign 2026</code>. What will Bulk Import create?</summary><p><code>spring-campaign-2026</code> — lower-cased, spaces replaced with dashes. The original name is kept as the folder title.</p></details>
+          <details><summary>When must processing and metadata profiles be on the target folders?</summary><p>Before ingestion, so assets are processed correctly on arrival instead of needing reprocessing.</p></details>
+          <details><summary>45 assets failed. What do you do? And 400?</summary><p>Under 50: retrigger them manually. Over 50: investigate the root cause first, fix it, then re-run.</p></details>
+        </div>
+
+        <h3>Completion checklist</h3>
+        <ul class="checklist">
+          <li><input type="checkbox" id="d1-c1"><label for="d1-c1">Explain the four migration phases and where CAM fits</label></li>
+          <li><input type="checkbox" id="d1-c2"><label for="d1-c2">Run a discovery with the questionnaire and capture KPIs</label></li>
+          <li><input type="checkbox" id="d1-c3"><label for="d1-c3">Choose a binary method with the decision tree and justify it</label></li>
+          <li><input type="checkbox" id="d1-c4"><label for="d1-c4">Apply naming rules and know how Bulk Import sanitises names</label></li>
+          <li><input type="checkbox" id="d1-c5"><label for="d1-c5">Plan batches, a Proof of Migration and the pre-migration checklist</label></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ DAY 2 ============ -->
+    <section class="section" id="day2" data-title="Day 2 — Bulk Import, metadata &amp; validation">
+      <div class="section-head"><div class="day-num">02</div><h2>Bulk Import, metadata &amp; validation</h2><span class="time-pill">6–7 h</span></div>
+      <p class="section-sub">Hands-on with scenario B: stage binaries in cloud storage, ingest them with the Bulk Import tool, map and import metadata in bulk, then prove the result with a validation report and plan the delta.</p>
+      <div class="section-body">
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Topic</div><div class="value">Details</div></div>
+
+          <div class="spec-row"><div class="label">Bulk Import — what it is</div><div class="value">
+            <p>The <b>Asset Bulk Import tool</b> is the recommended method for large-scale migrations and occasional bulk ingestions into AEMaaCS from <b>Azure Blob Storage</b> or <b>Amazon S3</b> (the Assets view also offers sources such as Dropbox). It is available only to the <b>administrators</b> group.</p>
+            <ul>
+              <li>Create the container/bucket as <b>private</b>, accepting only authorised requests. Extra network ingress restrictions on the bucket aren't supported.</li>
+              <li>It imports the whole folder structure from the source, but <b>empty folders are not created</b>.</li>
+              <li>Best practice: curate (remove unused/duplicate assets), organise (for example isolate very large files), and stagger ingestions in several jobs.</li>
+            </ul>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets#asset-bulk-ingestor" target="_blank" rel="noopener">Asset Bulk Import tool</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-learn/cloud-service/migration/bulk-import" target="_blank" rel="noopener">Bulk Import tutorial (video)</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Configure an import</div><div class="value">
+            <p><b>Tools → Assets → Bulk Import → Create</b>, then fill in:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Field</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>Title / Import Source</td><td>Locked after creation — can't be edited later.</td></tr>
+                <tr><td>Connection</td><td>Azure: storage account, container, and <b>Access Key</b> (full access) or <b>SAS Token</b> (scoped and time-bound — prefer this). S3: bucket, region, keys.</td></tr>
+                <tr><td>Source Folder</td><td>Root folder in the container that holds the assets.</td></tr>
+                <tr><td>Filter by Min / Max Size (MB)</td><td>Useful to import very large files in a separate job.</td></tr>
+                <tr><td>Include / Exclude MIME Types</td><td>Comma-separated, regex allowed, for example <code>image/.*, video/mp4</code>.</td></tr>
+                <tr><td>Delete source file after import</td><td>Frees source storage and prevents re-import. If you use it with a metadata CSV in the same container, exclude the CSV with the MIME or path filters.</td></tr>
+                <tr><td>Import Mode</td><td><b>Skip</b> (default — keep existing), <b>Replace</b> (overwrites, loses metadata and annotations, regenerates the asset ID), <b>Create Version</b>.</td></tr>
+                <tr><td>Assets Target Folder</td><td>For example <code>/content/dam/luma-migration</code>.</td></tr>
+                <tr><td>Metadata File</td><td>Optional CSV in the source container, in the same format as metadata import (see 3.2).</td></tr>
+              </tbody>
+            </table></div>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Run &amp; monitor</div><div class="value">
+            <div class="flow">
+              <div class="step"><b>Check</b><small>Validates the connection and credentials</small></div>
+              <div class="step"><b>Dry Run</b><small>Assets detected, scope, warnings — imports nothing</small></div>
+              <div class="step"><b>Run</b><small>Processing → Succeeded. Stop and Run again to resume</small></div>
+              <div class="step"><b>Job History</b><small>Status, creator, logs, timings</small></div>
+              <div class="step"><b>View Assets</b><small>Opens the target folder</small></div>
+            </div>
+            <p><b>Schedule</b> a one-time, hourly, daily or weekly import for recurring feeds or delta loads.</p>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Dropbox source (Assets view)</div><div class="value">
+            <ol>
+              <li>Create a Dropbox developer app (<b>Full Dropbox</b> or <b>App folder</b>). Enterprise accounts need the <b>Content admin</b> role — <i>Team admin</i> isn't supported.</li>
+              <li>Permissions: <code>account_info.read</code>, <code>files.metadata.read</code>, <code>files.content.read</code>, <code>files.content.write</code> (only needed for delete-source).</li>
+              <li>Redirect URI: <code>https://experience.adobe.com</code>. Copy the App key and secret.</li>
+              <li>In Assets view: <b>Settings → Bulk Import → Create Import → Dropbox</b>. Source Folder is the path after <code>dropbox.com/home/</code> (for App folder, after <code>home/Apps/&lt;app-name&gt;/</code>). Sign in, allow, save.</li>
+              <li>Check status <b>COMPLETED</b> under <i>Executed Imports</i>, then <b>View Assets</b>.</li>
+            </ol>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/spaces/WEM/pages/2906547049/User+Guide+-+Bulk+Import+for+Dropbox" target="_blank" rel="noopener">User Guide — Bulk Import for Dropbox</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Programmatic ingestion</div><div class="value">
+            <p>When ingestion is frequent, needs progress monitoring, or the target path depends on business logic, use <b>direct binary upload</b> through the <code>@adobe/aem-upload</code> library (AEMaaCS) — metadata can be set in the same step. Any custom upload code for AEMaaCS must use the direct binary upload protocol.</p>
+            <ul class="link-list">
+              <li><a href="https://github.com/adobe/aem-upload" target="_blank" rel="noopener">adobe/aem-upload</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/developer-reference-material-apis#asset-upload" target="_blank" rel="noopener">Asset upload API</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/mac-api-assets" target="_blank" rel="noopener">Assets HTTP API</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">3.2 Metadata — mapping rules</div><div class="value">
+            <ul>
+              <li>Define the <b>metadata schema, profiles and taxonomy</b> in the target before mapping.</li>
+              <li>Don't migrate system fields — <b>MIME type, size, uploaded date, uploaded by</b> are generated by AEM. Size shows in <b>bytes</b> in AEM even if the source used KB/GB.</li>
+              <li>Tags/keywords and dates usually need reformatting; plan scripts or post-processing.</li>
+              <li><b>Drop-down values must match exactly</b> (case and spelling) between source and target.</li>
+              <li>Keep legacy fields (legacy upload date/by) <b>read-only</b>; don't reformat them unless business logic uses them.</li>
+              <li>Agree what's extracted from the binary (XMP) and whether anything must be written back.</li>
+            </ul>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251679" target="_blank" rel="noopener">Metadata Mapping</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Bulk metadata import / export</div><div class="value">
+            <p><b>Recommended order:</b> import binaries without metadata → export metadata from AEM → fill or merge → import. The AEM export is your template, because it produces column headers in exactly the format the importer expects.</p>
+            <p><b>Export:</b> select the folder → <b>Export metadata</b> → tick <i>Include assets in subfolders</i> → <i>Selective</i> properties → download from the inbox / async jobs (<b>CSV Download</b>). Limit: 1,048,575 assets per export.</p>
+            <p><b>Import:</b> Assets → <b>Create → Metadata</b>, choose the CSV and set:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Parameter</th><th>Default / notes</th></tr></thead>
+              <tbody>
+                <tr><td>Batch Size</td><td>50 (max 100)</td></tr>
+                <tr><td>Field Separator</td><td><code>,</code></td></tr>
+                <tr><td>Multi value Delimiter</td><td><code>|</code></td></tr>
+                <tr><td>Launch Workflows</td><td>false — enabling triggers XMP write-back and slows the system</td></tr>
+                <tr><td>Asset Path Column Name</td><td>Usually <code>assetPath</code></td></tr>
+              </tbody>
+            </table></div>
+            <p>Dates: <code>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</code> by default (for example <code>2020-03-26T11:26:00.000-07:00</code>). A different format can be declared in the column header. Register custom namespaces before import. Track the job in the async jobs console (<code>/mnt/overlay/granite/async/content/asyncjobs.html</code>).</p>
+            <pre><code>assetPath,dc:title {{String}},dc:description {{String}},cq:tags {{String: multi}}
+/content/dam/luma-migration/apparel/tee-red.jpg,Red Tee,Summer range,luma:season/summer|luma:category/tops</code></pre>
+            <p class="note">The header syntax above is illustrative — always copy the exact headers from your own export.</p>
+            <p><b>Via Bulk Import:</b> upload the CSV to the same container and set <i>Metadata File</i>. Gotcha: if a <i>Source Folder</i> is set, the metadata file path must include it.</p>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/metadata-import-export" target="_blank" rel="noopener">Import &amp; export metadata</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/spaces/WEM/pages/3168863292/Bulk+Import+Metadata" target="_blank" rel="noopener">Bulk Import Metadata (sample CSV)</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251680" target="_blank" rel="noopener">Manual metadata mapping</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251682" target="_blank" rel="noopener">Metadata mapping via code</a></li>
+            </ul>
+            <div class="tipbox"><span class="ic">💡</span><p><b>Tip:</b> in practice the client exports metadata from the source too. Normalise both path columns (prefix, case, sanitised names from your rename log), then merge the two CSVs on <code>assetPath</code>.</p></div>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Validate migrated assets</div><div class="value">
+            <div class="table-wrap"><table>
+              <thead><tr><th>Approach</th><th>How</th></tr></thead>
+              <tbody>
+                <tr><td>Count</td><td>Assets in the source folder vs. imported (asset reports, Bulk Import job history)</td></tr>
+                <tr><td>Size</td><td>Size / disk-usage reports compared with the source</td></tr>
+                <tr><td>Sampling</td><td>Spot-check samples across different folders and types</td></tr>
+                <tr><td>SHA hash</td><td>Compare source and target hashes when the client needs proof of every file — custom effort; the client provides source hashes</td></tr>
+                <tr><td>Metadata</td><td>Bulk-export metadata and sample it, focusing on business-critical fields</td></tr>
+              </tbody>
+            </table></div>
+            <ul class="link-list"><li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251685" target="_blank" rel="noopener">Validate migrated assets</a></li><li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/asset-reports" target="_blank" rel="noopener">Asset reports</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Delta &amp; post-migration</div><div class="value">
+            <p><b>Delta:</b> agree a date and a <b>short content freeze</b>. The source produces a delta report, a delta <code>metadata.csv</code> and the delta binaries in the staging bucket. Run the same pre- and post-migration steps, then retry any failures.</p>
+            <p><b>Post-migration checklist:</b></p>
+            <ul>
+              <li>No errors or warnings in the author logs (Cloud Manager log download on AEMaaCS).</li>
+              <li>Re-enable launchers and profiles, and <b>reprocess</b> assets if processing was deferred (AEMaaCS: <i>Reprocess Assets</i>; 6.5: ACS Commons Bulk Workflow, max ~50k paths per run).</li>
+              <li>Restructure folders if the migration was as-is (for example ACS Commons MCP <i>Folder Relocator</i> on 6.x, or move operations).</li>
+              <li>Sample asset-level metadata across categories.</li>
+              <li>Enable Dynamic Media sync if used.</li>
+              <li>Publish in <b>batches by subtree</b> — never activate the DAM root in one go.</li>
+            </ul>
+            <ul class="link-list">
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251686" target="_blank" rel="noopener">Delta migration</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251683" target="_blank" rel="noopener">Post Migration Checklist</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/asset-microservices-configure-and-use#reprocess-assets" target="_blank" rel="noopener">Reprocess assets</a></li>
+            </ul>
+          </div></div>
+        </div>
+
+        <h3>Assignments</h3>
+        <div class="assignments">
+          <div class="assignment"><div class="a-head">#1<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Build the Luma "third-party DAM" sample set (about 50 files): nested folders, an <b>empty folder</b>, a folder with upper case and spaces, a file named <code>sale 50%.jpg</code>, one file over 100 MB, and a few PDFs. Upload it to your private Azure container. Create a Bulk Import configuration with a <b>SAS token</b>, then run <b>Check</b> and <b>Dry Run</b>.</p>
+            <div class="done-when"><b>Done when</b>the Dry Run asset count matches what you uploaded and shows no credential or path errors.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#2<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Run the import into <code>/content/dam/luma-migration</code>, with a processing profile already on the target folder. Then explain every difference between the source and the target.</p>
+            <div class="done-when"><b>Done when</b>the job shows <i>Succeeded</i>, and you can explain the missing empty folder, the lower-cased and dashed folder name, and the escaped <code>%</code> in the asset name.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#3<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Change two source files and re-run in <b>Skip</b> mode, then in <b>Create Version</b> mode. Then create a second configuration that imports only files over 100 MB, using the size filter.</p>
+            <div class="done-when"><b>Done when</b>Skip changes nothing, Create Version adds a version in the timeline, and the size-filtered job imports only the large file.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#4<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Metadata, manual route: export selective metadata (title, description, tags, a date field) including subfolders. Merge it with a "source" spreadsheet you create, keyed on <code>assetPath</code> and with paths normalised using your Day 1 rename log. Reformat tags and dates, save as UTF-8, and import with <b>Create → Metadata</b>.</p>
+            <div class="done-when"><b>Done when</b>the async job succeeds, and 5 sampled assets show the correct multi-value tags and dates.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#5<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Metadata, Bulk Import route: put a corrected CSV in the container, reference it in <i>Metadata File</i> (taking the Source Folder into account), and exclude CSV files from asset ingestion.</p>
+            <div class="done-when"><b>Done when</b>the run applies the metadata, and the CSV doesn't appear as an asset in the DAM.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#6<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>(Dev track) Upload 10 files with <code>@adobe/aem-upload</code> using a local development token, logging progress per file.</p>
+            <div class="done-when"><b>Done when</b>the console shows per-file progress and all 10 assets are processed in the target folder.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#7<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Write a validation report and a delta plan for scenario B, covering counts, size, sampling and metadata, plus the freeze window, delta steps and schedule.</p>
+            <div class="done-when"><b>Done when</b>the report reconciles source and target counts (with explained differences), and the delta plan names owner, date, freeze length and retry approach.</div>
+          </div></div>
+        </div>
+
+        <h3>Knowledge check</h3>
+        <div class="quiz">
+          <details><summary>Why prefer a SAS token over an Access Key?</summary><p>A SAS token can be limited by permissions and expiry. An Access Key grants full access to the storage account.</p></details>
+          <details><summary>Your metadata import reports success, but drop-down fields are blank in the UI. What's the likely cause?</summary><p>The values don't exactly match the schema's drop-down options (case or spelling).</p></details>
+          <details><summary>What does "Replace" import mode do to existing metadata and the asset ID?</summary><p>It overwrites the asset. Existing metadata and edits are lost, and the asset ID is regenerated, which breaks Assets Insights tracking.</p></details>
+          <details><summary>Are assets reprocessed automatically after they're ingested with CTT?</summary><p>No. They are reindexed, but you must request reprocessing.</p></details>
+        </div>
+
+        <h3>Completion checklist</h3>
+        <ul class="checklist">
+          <li><input type="checkbox" id="d2-c1"><label for="d2-c1">Configure, check, dry-run, run and schedule Bulk Import from Azure (or S3)</label></li>
+          <li><input type="checkbox" id="d2-c2"><label for="d2-c2">Explain Bulk Import naming sanitisation and import modes</label></li>
+          <li><input type="checkbox" id="d2-c3"><label for="d2-c3">Export, merge, transform and import metadata in bulk (UI and Bulk Import routes)</label></li>
+          <li><input type="checkbox" id="d2-c4"><label for="d2-c4">Produce a validation report using several approaches</label></li>
+          <li><input type="checkbox" id="d2-c5"><label for="d2-c5">Plan a delta migration and run the post-migration checklist</label></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ DAY 3 ============ -->
+    <section class="section" id="day3" data-title="Day 3 — Content Transfer Tool &amp; Content Copy Tool">
+      <div class="section-head"><div class="day-num">03</div><h2>Content Transfer Tool &amp; Content Copy Tool</h2><span class="time-pill">6–7 h</span></div>
+      <p class="section-sub">Hands-on with scenario A: assess the AEM source with BPA, create migration sets in Cloud Acceleration Manager, extract and ingest with the Content Transfer Tool (including top-ups and pre-copy), then use the Content Copy Tool to move content between cloud environments.</p>
+      <div class="section-body">
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Topic</div><div class="value">Details</div></div>
+
+          <div class="spec-row"><div class="label">BPA &amp; CAM readiness</div><div class="value">
+            <p>Run the <b>Best Practices Analyzer</b> on the source, export the report as CSV and upload it to your CAM project. Review the code and content complexity findings and turn them into backlog items.</p>
+            <ul>
+              <li><b>Missing original rendition</b>: the binary was never uploaded properly. Back it up, then remove it at the source before extraction, because bad data breaks asset processing.</li>
+              <li><b>Folders missing <code>jcr:content</code></b>: profiles and settings won't inherit below them. Fix them before migrating.</li>
+              <li>The internal <b>BPA utility</b> focuses on <i>Asset Content Validator</i> (ACV) findings, such as missing mandatory nodes.</li>
+            </ul>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/best-practices-analyzer/overview-best-practices-analyzer" target="_blank" rel="noopener">Best Practices Analyzer</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-acceleration-manager/using-cam/cam-readiness-phase" target="_blank" rel="noopener">CAM readiness phase</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">CTT — how it works</div><div class="value">
+            <div class="flow">
+              <div class="step"><b>CAM project</b><small>Create a migration set and copy its extraction key</small></div>
+              <div class="step"><b>Source AEM</b><small>Install CTT, paste the key, add paths, run Check Size</small></div>
+              <div class="step"><b>Extraction</b><small>Source content goes to the migration set (Adobe-provided cloud storage)</small></div>
+              <div class="step"><b>Ingestion</b><small>Started in CAM, from the migration set into the target author or publish</small></div>
+              <div class="step"><b>Validate</b><small>Validation report and principal migration report</small></div>
+            </div>
+            <ul>
+              <li>Extract once and ingest into several environments in parallel. Ingestion logs are kept in CAM.</li>
+              <li><b>Groups</b> are migrated, but <b>users are not</b>; users come from IMS. Extraction copies all of <code>/home/groups</code>, and ingestion brings in the groups referenced in the migrated content's ACLs.</li>
+              <li>CTT does no content analysis. It doesn't distinguish published from unpublished content, so run it author → author and publish → publish.</li>
+              <li>CTT supports AEM 6.3+ on-prem or AMS → AEMaaCS only. It <b>cannot</b> move content between Cloud Service environments.</li>
+            </ul>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/overview-content-transfer-tool" target="_blank" rel="noopener">CTT overview</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/guidelines-best-practices-content-transfer-tool" target="_blank" rel="noopener">Guidelines &amp; best practices</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/group-migration" target="_blank" rel="noopener">Group migration</a></li>
+              <li><a class="internal" href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3194251646" target="_blank" rel="noopener">CTT recipe (PDF)</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Prerequisites &amp; limits</div><div class="value">
+            <div class="table-wrap"><table>
+              <tbody>
+                <tr><td>AEM / Java</td><td>AEM 6.3 or higher with Java 8 or later; the <code>java</code> command must work for the user running AEM. Older versions must be upgraded first.</td></tr>
+                <tr><td>Segment store</td><td>Under 750 million JCR nodes; up to 500 GB online-compacted on author and 50 GB on publish.</td></tr>
+                <tr><td>Total repository</td><td>Up to 20 TB for File Data Store. S3 or Azure data stores can go above 20 TB using pre-copy.</td></tr>
+                <tr><td>Lucene indexes</td><td>25 GB in total, excluding <code>/oak:index/lucene</code> and <code>/oak:index/damAssetLucene</code>.</td></tr>
+                <tr><td>MongoDB</td><td>No property value over 16 MB. Check with oak-run and convert large values to binaries.</td></tr>
+                <tr><td>Data stores</td><td>File, S3, Shared S3 and Azure Blob. S3 and Azure stores must not be garbage-collected while you migrate.</td></tr>
+                <tr><td>Connectivity</td><td>Outbound HTTPS from the source to <code>casstorageprod.blob.core.windows.net</code>. Import the CA certificate if you hit <i>PKIX path building failed</i>.</td></tr>
+                <tr><td>Custom indexes</td><td>Configure them with a <code>tika</code> node before running CTT.</td></tr>
+              </tbody>
+            </table></div>
+            <p class="note">Beyond any of these limits, raise a support ticket with Adobe Customer Care before planning.</p>
+            <ul class="link-list"><li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/prerequisites-content-transfer-tool" target="_blank" rel="noopener">CTT prerequisites</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Migration sets</div><div class="value">
+            <ul>
+              <li>Up to <b>10 migration sets per CAM project</b>, expired ones included. Names follow JCR node naming rules.</li>
+              <li>Choose the <b>region</b> closest to the target environment. It can't be changed later.</li>
+              <li>The <b>extraction key</b> is valid for <b>14 days</b> and can be renewed. Treat it like a password.</li>
+              <li>A set expires after about <b>45 days</b> of inactivity. Editing it, getting its key, extracting or ingesting resets the clock.</li>
+              <li>On the source (<b>Operations → Content Migration</b>), paste the key, add <b>include paths</b> (or upload a CSV of paths, one per line, from CTT 3.0.24) and <b>exclude paths</b> (for example <code>/content/dam/luma/archive</code>). <code>/apps</code>, <code>/libs</code>, <code>/home</code> and most of <code>/etc</code> are restricted.</li>
+              <li><b>Include versions</b> also adds <code>/var/audit</code>.</li>
+              <li>Always run <b>Check Size</b> before extracting. It tells you whether disk space is enough and whether the set is within product limits.</li>
+            </ul>
+            <ul class="link-list"><li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/getting-started-content-transfer-tool" target="_blank" rel="noopener">Getting started with CTT</a></li></ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Extraction &amp; AzCopy pre-copy</div><div class="value">
+            <ul>
+              <li><b>Overwrite staging container</b> on = full re-extraction. Off = <b>top-up</b>, which adds only what changed since the last extraction.</li>
+              <li>Pre-copy uses <b>AzCopy</b> to copy blobs directly between stores, which speeds up large first runs. From CTT <b>2.0.16</b> it's set up automatically and used whenever the set is over <b>200 GB</b>. The config lives in <code>crx-quickstart/cloud-migration/azcopy.config</code>.</li>
+              <li>Pre-copy requires data store garbage collection within the last <b>7 days</b>. A File Data Store also needs free space above <b>1/256</b> of the data store size (for example over 11.72 GB for 3 TB). Moving data out of S3 or Azure has egress costs.</li>
+              <li>Watch the extraction log for <code>Beginning AzCopy Pre-Copy phase</code>. If only some blobs fail, re-run with both Pre-copy and Overwrite unchecked.</li>
+            </ul>
+            <pre><code># crx-quickstart/cloud-migration/azcopy.config (Azure source data store)
+azCopyPath=/usr/bin/azcopy
+azureSas=https://&lt;account&gt;.blob.core.windows.net/&lt;container&gt;?&lt;read-list-SAS&gt;</code></pre>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/extracting-content" target="_blank" rel="noopener">Extraction</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/handling-large-content-repositories" target="_blank" rel="noopener">Large repositories (AzCopy)</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Ingestion</div><div class="value">
+            <p>In CAM, open <b>Content Transfer → Ingestion Jobs → New Ingestion</b>. Pick the migration set, the destination (RDE and Preview environments aren't allowed), the tier, <b>Wipe</b> and <b>Pre-copy</b>.</p>
+            <div class="warnbox"><span class="ic">⚠️</span><p><b>Author ingestion takes the author service down</b> for the whole run; the environment shows as hibernated. Publish keeps serving traffic. Don't run Cloud Manager pipelines during an ingestion.</p></div>
+            <ul>
+              <li><b>Wipe = on</b> resets the destination, permissions included; re-add yourself to <i>administrators</i> afterwards. <b>Wipe = off</b> keeps existing content as the starting point.</li>
+              <li>Either way, ingestion <b>replaces</b> paths rather than merging them. If the set contains <code>/content/page1</code>, the target's whole <code>page1</code> subtree is replaced.</li>
+              <li>Non-wipe ingestion is designed for <b>top-ups</b>. Used otherwise, it can be very slow.</li>
+              <li>Starting an ingestion needs <b>AEM administrators</b> membership on the target, or a pasted <b>migration token</b>.</li>
+              <li>An <b>IP allowlist</b> on the target blocks CAM. Add <code>0.0.0.0/0</code> temporarily during ingestion and indexing.</li>
+              <li>AEM version updates are paused automatically during ingestion.</li>
+              <li>After ingestion, assets are <b>reindexed</b> but <b>not reprocessed</b>. Request reprocessing yourself.</li>
+            </ul>
+            <ul class="link-list">
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/ingesting-content" target="_blank" rel="noopener">Ingesting content</a></li>
+              <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/validating-content-transfers" target="_blank" rel="noopener">Validating transfers</a></li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Top-ups, go-live &amp; Dynamic Media</div><div class="value">
+            <ul>
+              <li>After the first full transfer, run <b>frequent top-ups</b> (extraction with overwrite off, ingestion with wipe off) to shorten the final freeze. Skip pre-copy for top-ups under 200 GB.</li>
+              <li>Don't restructure source content between the initial extraction and later top-ups.</li>
+              <li>If you include versions and top up with <code>wipe=false</code>, disable version purge on the source, or ingest with <code>wipe=true</code> instead.</li>
+              <li>There are <b>no merge ingestions</b>. Consolidate multiple source systems before migrating where you can.</li>
+              <li><b>Dynamic Media:</b> AEMaaCS supports Scene7 mode only, so hybrid mode must be migrated. Disable DM on any clone used for extraction. At go-live, connect DM on AEMaaCS and disconnect it from the source.</li>
+            </ul>
+          </div></div>
+
+          <div class="spec-row"><div class="label">Content Copy Tool</div><div class="value">
+            <p>A Cloud Manager feature that copies <b>mutable content between AEMaaCS author services</b>, for example to refresh Stage or Dev with real content after a migration, or for UAT.</p>
+            <ul>
+              <li>Permitted paths: <code>/content</code>, <code>/conf/**/settings/wcm</code>, <code>/conf/**/settings/dam/cfm/models</code>, <code>/conf/**/settings/graphql/persistentQueries</code>, <code>/etc/clientlibs/fd/themes</code>.</li>
+              <li><b>Content set</b>: up to <b>50 include paths</b> and unlimited exclude sub-paths. Create and edit it under <b>Cloud Manager → Content Sets</b>.</li>
+              <li>Directions: <b>top-down</b> (Prod → Stage → Dev/RDE) and <b>forward flow</b> between non-production environments (for example Dev → Stage). Production is never a forward-flow destination.</li>
+              <li>Options: include ACLs, <b>Wipe destination before import</b>, package import failure policy (stop on first failure or continue), and publish after import (mirrors the source's publish state).</li>
+              <li>Permissions: the <b>Deployment Manager</b> role to manage sets; Deployment Manager and AEM administrators to start a copy.</li>
+              <li>Limits: author only; no concurrent copies per environment; <b>no version history</b>; no automatic delta; not a cloning or backup tool. <b>Never run it while a CTT ingestion is running</b> on the same environment. Cancelling can leave a partial copy.</li>
+              <li>Monitor it under <b>Environments → Copy Content Activity</b>; download the logs for source and destination.</li>
+            </ul>
+            <ul class="link-list"><li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/developer-tools/content-copy" target="_blank" rel="noopener">The Content Copy Tool</a></li></ul>
+          </div></div>
+        </div>
+
+        <h3>Which tool when?</h3>
+        <div class="compare">
+          <div class="opt" style="--c: var(--c-blue)"><h5>Content Transfer Tool</h5><ul><li>AEM 6.3+ on-prem/AMS → AEMaaCS</li><li>Large volumes, versions, groups</li><li>Top-ups to shorten the freeze</li></ul></div>
+          <div class="opt" style="--c: var(--c-purple)"><h5>Bulk Import</h5><ul><li>Non-AEM sources staged in Azure, S3 or Dropbox</li><li>One-time or scheduled</li><li>Metadata through CSV</li></ul></div>
+          <div class="opt" style="--c: var(--c-green)"><h5>Content Copy Tool</h5><ul><li>AEMaaCS → AEMaaCS (author)</li><li>Refreshing lower environments</li><li>No versions, no delta tracking</li></ul></div>
+          <div class="opt" style="--c: var(--c-grey)"><h5>Package Manager</h5><ul><li>Small, targeted content</li><li>Not for bulk asset migration</li></ul></div>
+        </div>
+
+        <h3>Assignments</h3>
+        <div class="assignments">
+          <div class="assignment"><div class="a-head">#1<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Install BPA on your local AEM 6.5 author, generate the report, and upload the CSV to a new CAM project called <code>luma-assets-migration</code>.</p>
+            <div class="done-when"><b>Done when</b>CAM shows the BPA results, and you've listed the assets-related findings with an action for each.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#2<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Create a migration set in CAM and install the latest CTT on the source. Configure the set with <code>/content/dam/luma</code> included, <code>/content/dam/luma/archive</code> excluded and versions excluded, then run <b>Check Size</b>.</p>
+            <div class="done-when"><b>Done when</b>Check Size reaches <i>FINISHED</i> with no warnings, and you've written down the reported size and the extraction key's expiry date.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#3<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Extract, then ingest into your sandbox <b>author</b>. Decide whether to use Wipe, and write down why. Expect the author to be unavailable during the ingestion.</p>
+            <div class="done-when"><b>Done when</b>the ingestion is <i>Completed</i>, you've reviewed the validation and principal migration reports, and the asset count under <code>/content/dam/luma</code> matches the source minus the archive.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#4<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Top-up: add 5 assets and edit 2 on the source. Run a top-up extraction (overwrite off), then ingest with wipe off. Finally, reprocess the migrated folder on AEMaaCS.</p>
+            <div class="done-when"><b>Done when</b>only the delta arrives, the top-up runs faster than the first ingestion, and the reprocessed assets have their cloud renditions.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#5<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Create a content set for <code>/content/dam/luma</code>, excluding one sub-path. If your program has a second environment, copy it there; otherwise walk through the dialog without starting the copy.</p>
+            <div class="done-when"><b>Done when</b>Copy Content Activity shows <i>Completed</i> and you've downloaded both logs, or you can explain each dialog option and why it would be greyed out.</div>
+          </div></div>
+          <div class="assignment"><div class="a-head">#6<input type="checkbox" class="a-check"></div><div class="assignment-body">
+            <p>Write Luma's cut-over runbook for scenario A: final top-up timing, content freeze, IP allowlist handling, author downtime communication, Dynamic Media switch-over, reprocessing, and publishing in batches.</p>
+            <div class="done-when"><b>Done when</b>a peer can follow the runbook step by step, and each step has an owner and an estimated duration.</div>
+          </div></div>
+        </div>
+
+        <h3>Knowledge check</h3>
+        <div class="quiz">
+          <details><summary>A client wants to copy Dev → Prod with the Content Copy Tool. Is that possible?</summary><p>No. Production is never a forward-flow destination. Content reaches Prod through migration or authoring, not by copying it up from Dev.</p></details>
+          <details><summary>With wipe off, will ingesting <code>/content/dam/luma</code> keep target-only assets under that path?</summary><p>No. Ingestion replaces paths and doesn't merge, so the whole subtree in the migration set overwrites the target's.</p></details>
+          <details><summary>The extraction key was generated 16 days ago. What now?</summary><p>It's expired, because keys last 14 days. Renew it in CAM, then extract.</p></details>
+          <details><summary>Ingestion can't reach the migration service, and the target has an IP allowlist. What's the fix?</summary><p>Temporarily add <code>0.0.0.0/0</code> to the allowlist for the ingestion and indexing, then restore it.</p></details>
+        </div>
+
+        <h3>Completion checklist</h3>
+        <ul class="checklist">
+          <li><input type="checkbox" id="d3-c1"><label for="d3-c1">Run BPA and review it in CAM</label></li>
+          <li><input type="checkbox" id="d3-c2"><label for="d3-c2">Create a migration set with include/exclude paths and run Check Size</label></li>
+          <li><input type="checkbox" id="d3-c3"><label for="d3-c3">Extract and ingest with CTT; explain Wipe, top-ups and pre-copy</label></li>
+          <li><input type="checkbox" id="d3-c4"><label for="d3-c4">Reprocess assets after ingestion</label></li>
+          <li><input type="checkbox" id="d3-c5"><label for="d3-c5">Create a content set and explain the Content Copy Tool's limits</label></li>
+          <li><input type="checkbox" id="d3-c6"><label for="d3-c6">Choose between CTT, Bulk Import, Content Copy and Package Manager</label></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ CAPSTONE ============ -->
+    <section class="section" id="capstone" data-title="Capstone">
+      <div class="section-head"><div class="day-num">★</div><h2>Capstone — Luma Retail DAM migration</h2><span class="time-pill">6–8 h</span></div>
+      <p class="section-sub">Put it all together. Plan, execute and validate Luma Retail's migration to AEMaaCS Assets from both sources, the way you would on a client project.</p>
+      <div class="section-body">
+        <h3>Objective</h3>
+        <ul>
+          <li>Migrate Luma's legacy <b>AEM 6.5 DAM</b> (scenario A) with <b>CTT</b>, and its <b>third-party DAM export</b> (scenario B) with <b>Bulk Import</b>, into one coherent folder structure on your AEMaaCS sandbox.</li>
+          <li>Apply mapped metadata, validate against agreed KPIs, and prove you can run a delta and cut over.</li>
+        </ul>
+
+        <h3>Must-have deliverables</h3>
+        <ul>
+          <li><b>Discovery &amp; strategy note</b>: answers to the questionnaire, the method chosen per source (with the decision tree), risks and KPIs.</li>
+          <li><b>Design</b>: target folder structure (≤ ~1,000 children per folder), metadata schema and profiles, naming rules.</li>
+          <li><b>Rename log</b> for scenario B, produced by your sanitisation script.</li>
+          <li><b>PoM estimate</b>: pilot size, measured throughput, extrapolated duration.</li>
+          <li><b>Scenario A</b>: BPA reviewed in CAM, migration set, initial extraction and ingestion, then one top-up.</li>
+          <li><b>Scenario B</b>: Bulk Import with dry run, the real run, and a scheduled delta configuration.</li>
+          <li><b>Metadata</b>: merged CSV imported. Tags, dates and drop-downs correct on sampled assets.</li>
+          <li><b>Validation report</b>: counts, size, sampling and metadata checks, with every difference explained.</li>
+          <li><b>Cut-over runbook &amp; post-migration checklist</b>, executed on the sandbox.</li>
+        </ul>
+
+        <h3>Acceptance criteria (rubric)</h3>
+        <div class="spec">
+          <div class="spec-row headrow"><div class="label">Criterion</div><div class="value">What good looks like</div></div>
+          <div class="spec-row"><div class="label">Strategy</div><div class="value">Each method choice is justified against the decision tree, and the risks have mitigations.</div></div>
+          <div class="spec-row"><div class="label">Completeness</div><div class="value">The target count equals the source count, minus documented exclusions and failures. Failures are under 50 and retried, or root-caused.</div></div>
+          <div class="spec-row"><div class="label">Naming &amp; structure</div><div class="value">No forbidden characters. Folders are lower-case. Every rename appears in the rename log.</div></div>
+          <div class="spec-row"><div class="label">Metadata</div><div class="value">10 or more sampled assets per source show correct mapped values. System fields weren't migrated as custom fields.</div></div>
+          <div class="spec-row"><div class="label">Processing</div><div class="value">Assets have cloud renditions. Assets ingested by CTT were reprocessed.</div></div>
+          <div class="spec-row"><div class="label">Operational safety</div><div class="value">Wipe decisions are documented. No Content Copy ran during an ingestion. Publishing was done in subtree batches.</div></div>
+        </div>
+
+        <h3>Stretch goals (optional)</h3>
+        <ul>
+          <li>Add SHA-256 hash validation for the scenario B files (source hashes compared with the downloaded originals).</li>
+          <li>Ingest one folder with <code>@adobe/aem-upload</code>, routing assets to folders by a CSV category column.</li>
+          <li>Use the Content Copy Tool to refresh a second environment with the migrated DAM.</li>
+        </ul>
+
+        <h3>Out of scope</h3>
+        <ul>
+          <li>Extracting data from the third-party DAM (it's given to you as files plus a CSV).</li>
+          <li>Moving Dynamic Media from hybrid to Scene7 mode, Sites pages, user provisioning in the Admin Console.</li>
+        </ul>
+
+        <h3>Completion checklist</h3>
+        <ul class="checklist">
+          <li><input type="checkbox" id="cp-1"><label for="cp-1">Strategy note with method per source, risks and KPIs</label></li>
+          <li><input type="checkbox" id="cp-2"><label for="cp-2">Target design: folders, schema, profiles, naming</label></li>
+          <li><input type="checkbox" id="cp-3"><label for="cp-3">Rename log and PoM estimate</label></li>
+          <li><input type="checkbox" id="cp-4"><label for="cp-4">CTT initial migration and one top-up completed</label></li>
+          <li><input type="checkbox" id="cp-5"><label for="cp-5">Bulk Import run plus a scheduled delta configuration</label></li>
+          <li><input type="checkbox" id="cp-6"><label for="cp-6">Metadata merged and imported; samples verified</label></li>
+          <li><input type="checkbox" id="cp-7"><label for="cp-7">Validation report with differences reconciled</label></li>
+          <li><input type="checkbox" id="cp-8"><label for="cp-8">Cut-over runbook and post-migration checklist executed</label></li>
+        </ul>
+        <p class="note">Share your deliverables and sandbox details with your mentor for review.</p>
+      </div>
+    </section>
+
+    <!-- ============ RESOURCES ============ -->
+    <section class="section" id="resources" data-title="Additional resources">
+      <div class="section-head"><div class="day-num">📚</div><h2>Additional resources</h2></div>
+      <div class="section-body">
+        <div class="res-grid">
+          <div class="res-card"><h4>Migration journey &amp; CAM</h4><ul>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/getting-started" target="_blank" rel="noopener">Migration journey — getting started</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-acceleration-manager/using-cam/getting-started-cam" target="_blank" rel="noopener">Cloud Acceleration Manager</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/best-practices-analyzer/overview-best-practices-analyzer" target="_blank" rel="noopener">Best Practices Analyzer</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-learn/cloud-service/migration/moving-to-aem-as-a-cloud-service/content-migration/faq" target="_blank" rel="noopener">Content migration FAQ</a></li>
+          </ul></div>
+          <div class="res-card"><h4>Content Transfer Tool</h4><ul>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/overview-content-transfer-tool" target="_blank" rel="noopener">Overview</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/prerequisites-content-transfer-tool" target="_blank" rel="noopener">Prerequisites</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/guidelines-best-practices-content-transfer-tool" target="_blank" rel="noopener">Guidelines &amp; best practices</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/getting-started-content-transfer-tool" target="_blank" rel="noopener">Getting started</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/ingesting-content" target="_blank" rel="noopener">Ingesting content</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/migration-journey/cloud-migration/content-transfer-tool/handling-large-content-repositories" target="_blank" rel="noopener">Large repositories (AzCopy)</a></li>
+          </ul></div>
+          <div class="res-card"><h4>Bulk Import &amp; metadata</h4><ul>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/manage/add-assets" target="_blank" rel="noopener">Add assets &amp; Bulk Import</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/metadata-import-export" target="_blank" rel="noopener">Metadata import/export</a></li>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/admin/developer-reference-material-apis#asset-upload" target="_blank" rel="noopener">Asset upload API</a></li>
+            <li><a href="https://github.com/adobe/aem-upload" target="_blank" rel="noopener">adobe/aem-upload</a></li>
+          </ul></div>
+          <div class="res-card"><h4>Content Copy Tool</h4><ul>
+            <li><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/developer-tools/content-copy" target="_blank" rel="noopener">The Content Copy Tool</a></li>
+            <li><a href="https://my.cloudmanager.adobe.com/" target="_blank" rel="noopener">Cloud Manager</a></li>
+          </ul></div>
+          <div class="res-card"><h4>🔒 Internal (Adobe wiki)</h4><ul>
+            <li><a href="https://wiki.corp.adobe.com/spaces/AEMComp/pages/3189405894/Asset+Migration+strategy+Document" target="_blank" rel="noopener">Asset Migration Strategy (decision tree)</a></li>
+            <li><a href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3200298156" target="_blank" rel="noopener">Discovery Questionnaire</a></li>
+            <li><a href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3737887359" target="_blank" rel="noopener">Asset Migration Tasks Checklist</a></li>
+            <li><a href="https://wiki.corp.adobe.com/pages/viewpage.action?pageId=3202059440" target="_blank" rel="noopener">Asset Migration Accelerators</a></li>
+            <li><a href="https://wiki.corp.adobe.com/spaces/WEM/pages/3168863292/Bulk+Import+Metadata" target="_blank" rel="noopener">Bulk Import Metadata</a></li>
+            <li><a href="https://wiki.corp.adobe.com/spaces/WEM/pages/2906547049/User+Guide+-+Bulk+Import+for+Dropbox" target="_blank" rel="noopener">Bulk Import for Dropbox</a></li>
+          </ul></div>
+          <div class="res-card"><h4>Utilities</h4><ul>
+            <li><a href="https://adobe-consulting-services.github.io/acs-aem-commons/features/bulk-workflow-manager/index.html" target="_blank" rel="noopener">ACS Commons Bulk Workflow Manager (6.x)</a></li>
+            <li><a href="https://opensource.adobe.com/asset-share-commons/" target="_blank" rel="noopener">Asset Share Commons</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10" target="_blank" rel="noopener">AzCopy</a></li>
+          </ul></div>
+        </div>
+
+        <h3>Vocabulary you'll hear every day</h3>
+        <p class="note">Click a card to reveal its definition.</p>
+        <div class="vocab-grid">
+          <button class="vocab-card"><b>CAM</b><span>Cloud Acceleration Manager</span><span class="def">Adobe's cloud app that guides a migration from readiness to go-live. It hosts BPA results, migration sets and ingestion jobs.</span></button>
+          <button class="vocab-card"><b>BPA</b><span>Best Practices Analyzer</span><span class="def">Assesses a source AEM for cloud readiness. Upload its CSV to CAM.</span></button>
+          <button class="vocab-card"><b>CTT</b><span>Content Transfer Tool</span><span class="def">Package installed on AEM 6.3+ that extracts content into a migration set for ingestion into AEMaaCS.</span></button>
+          <button class="vocab-card"><b>Migration set</b><span>Staging storage</span><span class="def">Adobe-provided cloud storage holding extracted content. Up to 10 per CAM project; expires after ~45 days of inactivity.</span></button>
+          <button class="vocab-card"><b>Extraction key</b><span>Source → set link</span><span class="def">Lets the source AEM write to a migration set. Valid for 14 days; treat it as a secret.</span></button>
+          <button class="vocab-card"><b>Top-up</b><span>Differential transfer</span><span class="def">Extraction with overwrite off plus ingestion with wipe off. Moves only what changed.</span></button>
+          <button class="vocab-card"><b>Wipe</b><span>Ingestion option</span><span class="def">Resets the destination repository, permissions included, before ingesting.</span></button>
+          <button class="vocab-card"><b>Pre-copy</b><span>AzCopy blob copy</span><span class="def">Copies blobs directly between stores to speed up large transfers. Automatic over 200 GB from CTT 2.0.16.</span></button>
+          <button class="vocab-card"><b>Bulk Import</b><span>Asset bulk ingestor</span><span class="def">OOTB AEMaaCS tool that imports assets from Azure, S3 and other sources, with dry run and scheduling.</span></button>
+          <button class="vocab-card"><b>Dry Run</b><span>Bulk Import test</span><span class="def">Validates the configuration and lists the assets in scope without importing anything.</span></button>
+          <button class="vocab-card"><b>Content set</b><span>Content Copy Tool</span><span class="def">Up to 50 include paths, plus exclude sub-paths, to copy between AEMaaCS environments.</span></button>
+          <button class="vocab-card"><b>Forward flow</b><span>Content Copy direction</span><span class="def">Copying from a lower to a higher non-production environment (for example Dev → Stage).</span></button>
+          <button class="vocab-card"><b>PoM</b><span>Proof of Migration</span><span class="def">Pilot on Stage with 25% of the content or ~1 TB, whichever is less, used to estimate the full run.</span></button>
+          <button class="vocab-card"><b>Delta migration</b><span>Catch-up load</span><span class="def">Moves assets created or changed at the source during the migration, under a short content freeze.</span></button>
+          <button class="vocab-card"><b>Processing profile</b><span>Asset microservices</span><span class="def">Folder-level configuration that defines the renditions generated in AEMaaCS.</span></button>
+          <button class="vocab-card"><b>Reprocess</b><span>Regenerate renditions</span><span class="def">Re-runs asset processing. Required after CTT ingestion.</span></button>
+          <button class="vocab-card"><b>assetPath</b><span>Metadata CSV key</span><span class="def">The column that identifies each asset in metadata import and export.</span></button>
+          <button class="vocab-card"><b>ACV</b><span>Asset Content Validator</span><span class="def">BPA category that flags missing mandatory nodes and broken asset content.</span></button>
+          <button class="vocab-card"><b>SAS token</b><span>Azure access</span><span class="def">Scoped, time-bound credential for an Azure container. Prefer it to account keys.</span></button>
+          <button class="vocab-card"><b>DSGC</b><span>Data store garbage collection</span><span class="def">Removes unreferenced blobs. Needed within 7 days before using pre-copy.</span></button>
+        </div>
+      </div>
+    </section>
+
+
+    <nav class="pager">
+      <button id="prevBtn" class="pg-prev"><span class="dir">← Previous</span><span class="pg-title" id="prevTitle"></span></button>
+      <button id="nextBtn" class="pg-next"><span class="dir">Up Next →</span><span class="pg-title" id="nextTitle"></span></button>
+    </nav>
+    <div class="footer">AEM Assets Migration Training — Migration consultant edition · v1.0 · Adobe ACS</div>
+  </main>
+</div>
+<button class="to-top" id="toTop" title="Back to top">↑</button>
+<script src="assets/scripts.js"></script>
+</body>
+</html>
